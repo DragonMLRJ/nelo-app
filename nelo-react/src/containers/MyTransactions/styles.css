@@ -1,0 +1,111 @@
+.my-transactions-container {
+  padding: 40px 20px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.my-transactions-container h1 {
+  margin-bottom: 24px;
+  color: var(--text-primary);
+  text-align: center;
+}
+
+.receipt-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.receipt-card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  border-top: 6px solid var(--brand);
+}
+
+.receipt-header {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px dashed var(--border-light);
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+}
+
+.receipt-id {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.receipt-date {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.receipt-body h3 {
+  font-size: 14px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  margin: 0 0 8px 0;
+}
+
+.item-name {
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--text-primary);
+  margin: 0 0 24px 0;
+}
+
+.receipt-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  color: var(--text-secondary);
+}
+
+.tax-row {
+  color: #d35400; /* Subtle orange for tax */
+}
+
+.total-row {
+  border-top: 2px solid var(--text-primary);
+  padding-top: 12px;
+  margin-top: 12px;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.receipt-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.receipt-actions button, .receipt-actions a {
+  flex: 1;
+  text-align: center;
+  padding: 12px;
+  font-size: 14px;
+}
+
+/* Print Styles */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .receipt-card, .receipt-card * {
+    visibility: visible;
+  }
+  .receipt-card {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    box-shadow: none;
+    border: 1px solid #ddd;
+  }
+  .receipt-actions, .bottom-nav, header {
+    display: none !important;
+  }
+}

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Nelo — Détail de l'annonce</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .listing-layout {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-6);
+      padding: var(--space-4) 0;
+    }
+    @media (min-width: 768px) {
+      .listing-layout {
+        flex-direction: row;
+        align-items: flex-start;
+      }
+    }
+    .listing-main { flex: 1; min-width: 0; }
+    .listing-sidebar {
+      width: 100%;
+      background: white;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      padding: var(--space-4);
+    }
+    @media (min-width: 768px) {
+      .listing-sidebar { width: 340px; position: sticky; top: 80px; }
+    }
+    .listing-image {
+      width: 100%;
+      aspect-ratio: 4/3;
+      background: var(--bg-main);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: var(--space-6);
+    }
+    .listing-title { font-size: var(--font-2xl); margin-bottom: var(--space-2); }
+    .listing-price { font-size: var(--font-2xl); font-weight: 700; color: var(--brand); margin-bottom: var(--space-4); }
+    .specs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); padding: var(--space-4); background: var(--bg-main); border-radius: var(--radius); }
+    .spec-item { display: flex; flex-direction: column; }
+    .spec-label { color: var(--text-muted); font-size: var(--font-sm); }
+    .spec-value { font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div id="header-container"></div>
+
+  <main class="container listing-layout">
+    
+    <div class="listing-main">
+      <div class="listing-image" id="listing-img-container">
+        <!-- Rempli par JS -->
+      </div>
+
+      <div class="listing-price" id="listing-price">-- €</div>
+      <h1 class="listing-title" id="listing-title">Chargement...</h1>
+      <p style="color: var(--text-muted); margin-bottom: var(--space-6);" id="listing-meta"></p>
+
+      <h3 style="margin-bottom: var(--space-4);">Description</h3>
+      <p style="white-space: pre-wrap; line-height: 1.6; margin-bottom: var(--space-8);" id="listing-desc"></p>
+
+      <h3 style="margin-bottom: var(--space-4);">Critères</h3>
+      <div class="specs-grid" id="listing-specs" style="margin-bottom: var(--space-8);">
+        <!-- Rempli par JS -->
+      </div>
+    </div>
+
+    <aside class="listing-sidebar">
+      <div style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-4);">
+        <div style="width: 48px; height: 48px; border-radius: 50%; background: var(--bg-main); display: flex; align-items: center; justify-content: center; font-weight: bold; color: var(--text-muted);" id="seller-avatar"></div>
+        <div>
+          <div style="font-weight: 600; font-size: var(--font-lg);" id="seller-name">Vendeur</div>
+          <div style="color: #F5B800; font-size: var(--font-sm);" id="seller-rating">★★★★★</div>
+        </div>
+      </div>
+      <button class="btn btn--primary btn--block mb-4" onclick="showToast('Ouverture de la messagerie...')">Envoyer un message</button>
+      <button class="btn btn--outline btn--block">Voir le numéro</button>
+      <div style="text-align: center; margin-top: var(--space-4); font-size: var(--font-xs); color: var(--text-muted);">
+        Paiement sécurisé par Nelo
+      </div>
+    </aside>
+
+  </main>
+
+  <div id="footer-container"></div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      document.getElementById('header-container').innerHTML = renderHeader('');
+      document.getElementById('footer-container').innerHTML = renderFooter();
+
+      const loaded = await loadData();
+      if (!loaded) return;
+
+      const id = getParam('id') || 1;
+      const listing = getListing(id);
+
+      if (!listing) {
+        document.querySelector('main').innerHTML = '<h1 style="text-align:center; padding: 100px 0;">Annonce introuvable</h1>';
+        return;
+      }
+
+      document.getElementById('listing-price').textContent = listing.priceLabel || formatPrice(listing.price);
+      document.getElementById('listing-title').textContent = listing.title;
+      document.getElementById('listing-meta').textContent = `${listing.location} • Publié ${listing.date}`;
+      document.getElementById('listing-desc').textContent = listing.description;
+
+      if (listing.specs) {
+        let specsHtml = '';
+        for (const [key, value] of Object.entries(listing.specs)) {
+          specsHtml += `<div class="spec-item"><span class="spec-label">${key}</span><span class="spec-value">${value}</span></div>`;
+        }
+        document.getElementById('listing-specs').innerHTML = specsHtml;
+      }
+
+      document.getElementById('seller-avatar').textContent = listing.seller.avatar;
+      document.getElementById('seller-name').textContent = listing.seller.name;
+      document.getElementById('seller-rating').textContent = generateStars(listing.seller.rating) + ` (${listing.seller.reviews})`;
+
+      // Image
+      const img = document.createElement('img');
+      img.src = generatePlaceholderImage(listing.imageColor, 800, 600, getCategory(listing.category)?.icon || '');
+      img.style.width = '100%';
+      img.style.height = '100%';
+      img.style.objectFit = 'cover';
+      document.getElementById('listing-img-container').appendChild(img);
+    });
+  </script>
+</body>
+</html>

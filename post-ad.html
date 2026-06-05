@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Nelo — Déposer une annonce</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .form-container { max-width: 600px; margin: 0 auto; background: white; border: 1px solid var(--border-light); border-radius: var(--radius); padding: var(--space-6); margin-top: var(--space-6); }
+    .step-title { font-size: var(--font-xl); margin-bottom: var(--space-6); }
+    .photo-upload { border: 2px dashed var(--border-medium); border-radius: var(--radius); padding: var(--space-6); text-align: center; cursor: pointer; margin-bottom: var(--space-4); background: var(--bg-main); transition: border-color 0.2s; }
+    .photo-upload:hover { border-color: var(--brand); }
+  </style>
+</head>
+<body>
+  <div id="header-container"></div>
+
+  <main class="container">
+    <div class="form-container">
+      <h1 class="step-title">Que voulez-vous vendre ?</h1>
+      
+      <div class="input-group">
+        <label>Titre de l'annonce</label>
+        <input type="text" class="input" placeholder="Ex: iPhone 13 Pro 128Go" required>
+      </div>
+
+      <div class="input-group">
+        <label>Catégorie</label>
+        <select class="select" id="cat-select">
+          <!-- Loaded via JS -->
+        </select>
+      </div>
+
+      <div class="input-group">
+        <label>Photos</label>
+        <div class="photo-upload" onclick="showToast('Ouverture de l\'explorateur de fichiers...')">
+          <div style="font-size: 24px; margin-bottom: 8px;">📸</div>
+          <div style="font-weight: 600;">Ajouter des photos</div>
+          <div style="font-size: var(--font-xs); color: var(--text-muted);">Jusqu'à 10 photos, max 5Mo/photo</div>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>Description</label>
+        <textarea class="textarea" rows="6" placeholder="Décrivez votre objet (état, caractéristiques, etc.)" required></textarea>
+      </div>
+
+      <div class="input-group">
+        <label>Prix (€)</label>
+        <input type="number" class="input" placeholder="0" min="0" required>
+      </div>
+      
+      <div class="input-group">
+        <label>Localisation</label>
+        <select class="select" id="loc-select">
+          <!-- Loaded via JS -->
+        </select>
+      </div>
+
+      <button class="btn btn--primary btn--block mt-4" style="padding: 16px; font-size: var(--font-lg);" onclick="event.preventDefault(); showToast('Annonce publiée avec succès !', 'default'); setTimeout(()=>window.location='index.html', 1500);">Publier l'annonce</button>
+    </div>
+  </main>
+
+  <div id="footer-container"></div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      document.getElementById('header-container').innerHTML = renderHeader('post');
+      document.getElementById('footer-container').innerHTML = renderFooter();
+
+      const loaded = await loadData();
+      if (!loaded) return;
+
+      const catSelect = document.getElementById('cat-select');
+      CATEGORIES.forEach(cat => {
+        const option = document.createElement('option');
+        option.value = cat.id;
+        option.textContent = cat.name;
+        catSelect.appendChild(option);
+      });
+
+      const locSelect = document.getElementById('loc-select');
+      CITIES.filter(c => c !== 'Toute la France').forEach(city => {
+        const option = document.createElement('option');
+        option.value = city;
+        option.textContent = city;
+        locSelect.appendChild(option);
+      });
+    });
+  </script>
+</body>
+</html>

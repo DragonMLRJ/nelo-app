@@ -1,0 +1,16 @@
+/* BLOCK SIGNUP */
+.signup-block {
+	display: flex;
+	align-items: center;
+	text-align: justify;
+}
+
+.signup-block i {
+	padding-right: 20px;
+	color: var(--brand);
+}
+
+.block-icon {
+	min-width: 65px;
+	text-align: center;
+}

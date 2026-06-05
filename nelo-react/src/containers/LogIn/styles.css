@@ -1,0 +1,37 @@
+/* LOGIN PAGE */
+.login {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-height: calc(100vh - 70px);
+	background: var(--bg-main);
+	padding: var(--space-8) 0;
+}
+
+.login-form {
+	width: 100%;
+	max-width: 480px;
+	background: white;
+	padding: var(--space-8);
+	border-radius: var(--radius);
+	box-shadow: var(--shadow-md);
+}
+
+.login-form h2 {
+	text-align: center;
+	margin-bottom: var(--space-6);
+	font-size: 28px;
+}
+
+.create-account {
+	border-top: 1px solid var(--border-light);
+	margin-top: var(--space-8);
+	text-align: center;
+	padding-top: var(--space-4);
+}
+
+.create-account h3 {
+	font-size: var(--font-base);
+	color: var(--text-secondary);
+	margin-bottom: var(--space-4);
+}

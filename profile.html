@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Nelo — Mon Profil</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .profile-header { background: white; padding: var(--space-6); border-radius: var(--radius); border: 1px solid var(--border-light); display: flex; flex-direction: column; align-items: center; text-align: center; margin-top: var(--space-6); margin-bottom: var(--space-6); }
+    @media (min-width: 768px) {
+      .profile-header { flex-direction: row; text-align: left; gap: var(--space-6); }
+    }
+    .profile-avatar { width: 100px; height: 100px; border-radius: 50%; background: var(--brand-light); color: var(--brand); display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: bold; flex-shrink: 0; margin-bottom: var(--space-4); }
+    @media (min-width: 768px) { .profile-avatar { margin-bottom: 0; } }
+    .profile-name { font-size: var(--font-2xl); font-weight: 700; margin-bottom: var(--space-1); }
+    .profile-meta { color: var(--text-muted); font-size: var(--font-sm); margin-bottom: var(--space-3); }
+    .profile-stats { display: flex; gap: var(--space-6); margin-top: var(--space-4); justify-content: center; }
+    @media (min-width: 768px) { .profile-stats { justify-content: flex-start; } }
+    .stat-item { text-align: center; }
+    .stat-value { font-weight: 700; font-size: var(--font-lg); }
+    .stat-label { font-size: var(--font-xs); color: var(--text-muted); }
+    
+    .tabs { display: flex; border-bottom: 1px solid var(--border-light); margin-bottom: var(--space-6); overflow-x: auto; }
+    .tab { padding: var(--space-3) var(--space-4); cursor: pointer; border-bottom: 2px solid transparent; font-weight: 500; color: var(--text-secondary); white-space: nowrap; }
+    .tab.active { border-bottom-color: var(--brand); color: var(--text-primary); }
+  </style>
+</head>
+<body>
+  <div id="header-container"></div>
+
+  <main class="container">
+    <div class="profile-header">
+      <div class="profile-avatar">AJ</div>
+      <div style="flex: 1;">
+        <h1 class="profile-name">Alex Johnson</h1>
+        <div class="profile-meta">Membre depuis Mars 2021 • Paris, France</div>
+        <button class="btn btn--outline btn--sm">Modifier le profil</button>
+      </div>
+      <div class="profile-stats">
+        <div class="stat-item"><div class="stat-value">12</div><div class="stat-label">Annonces</div></div>
+        <div class="stat-item"><div class="stat-value">4.9</div><div class="stat-label">Note (45)</div></div>
+        <div class="stat-item"><div class="stat-value">156</div><div class="stat-label">Ventes</div></div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active">Mes annonces en ligne</div>
+      <div class="tab">Brouillons</div>
+      <div class="tab">Favoris</div>
+    </div>
+
+    <div id="user-listings" class="grid grid-3">
+      <!-- Rempli par JS -->
+    </div>
+  </main>
+
+  <div id="footer-container"></div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      document.getElementById('header-container').innerHTML = renderHeader('profile');
+      document.getElementById('footer-container').innerHTML = renderFooter();
+
+      const loaded = await loadData();
+      if (!loaded) return;
+
+      // Just grab first 3 listings as mock user listings
+      const userListings = LISTINGS.slice(0, 3);
+      const container = document.getElementById('user-listings');
+      container.innerHTML = userListings.map(l => renderListingCard(l)).join('');
+
+      document.querySelectorAll('#user-listings .card__image').forEach(el => {
+        const card = el.closest('.card');
+        const listing = getListing(card.dataset.id);
+        if (listing) {
+          const img = document.createElement('img');
+          img.src = generatePlaceholderImage(listing.imageColor, 400, 300, getCategory(listing.category)?.icon || '📦');
+          el.prepend(img);
+        }
+      });
+    });
+  </script>
+</body>
+</html>

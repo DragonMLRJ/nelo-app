@@ -1,0 +1,155 @@
+/* PUBLISH PAGE */
+.publish {
+	background: white;
+	border-radius: var(--radius);
+	box-shadow: var(--shadow-md);
+	padding: var(--space-8);
+	margin-top: var(--space-8);
+	margin-bottom: var(--space-8);
+	max-width: 800px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.publish .title {
+	font-size: 28px;
+	font-weight: 900;
+	margin-bottom: var(--space-6);
+	text-align: center;
+	color: var(--text-primary);
+}
+
+.publish button {
+	margin-top: var(--space-8);
+}
+
+.image-container {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--space-4);
+	margin-top: var(--space-2);
+}
+
+.add-picture {
+	width: 120px;
+	height: 120px;
+	background: var(--bg-main);
+	color: var(--text-secondary);
+	text-align: center;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	border: 2px dashed var(--border-light);
+	border-radius: var(--radius);
+	transition: all 0.2s;
+	font-size: var(--font-sm);
+}
+
+.add-picture i {
+	margin-bottom: 8px;
+	color: var(--brand);
+}
+
+.add-picture:hover {
+	border-color: var(--brand);
+	  background-color: var(--brand-hover);
+}
+
+.location-picker {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.location-picker input {
+  margin-bottom: 0 !important;
+  flex: 1;
+}
+
+.geo-btn {
+  background: var(--bg-card);
+  color: var(--brand);
+  border: 1px solid var(--border-light);
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.geo-btn:hover {
+  background: var(--brand-light);
+  border-color: var(--brand);
+}
+
+.small.success {
+  color: #2e7d32;
+  font-weight: 500;
+}
+
+.image-container .image {
+	width: 120px;
+	height: 120px;
+	border-radius: var(--radius);
+	display: flex;
+	background-position: center;
+	background-size: cover;
+	position: relative;
+	overflow: hidden;
+}
+
+.image-container .delete {
+	position: absolute;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.6);
+	color: white;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	opacity: 0;
+	transition: opacity 0.2s;
+	font-size: var(--font-sm);
+}
+
+.image-container .image:hover .delete {
+	opacity: 1;
+	cursor: pointer;
+}
+
+.react-file-reader,
+.react-file-reader-button {
+	display: inline;
+}
+
+@media (max-width: 600px) {
+	.publish {
+		padding: var(--space-4);
+		margin-top: var(--space-4);
+		margin-bottom: var(--space-4);
+	}
+	.publish .title {
+		font-size: 24px;
+	}
+	.location-picker {
+		flex-direction: column;
+		align-items: stretch;
+	}
+	.geo-btn {
+		justify-content: center;
+	}
+	.image-container .image, 
+	.add-picture {
+		width: 100px;
+		height: 100px;
+	}
+	.add-picture i {
+		font-size: 24px;
+	}
+}

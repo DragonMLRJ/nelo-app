@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Nelo — Recherche</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="header-container"></div>
+
+  <main class="container search-layout">
+    
+    <!-- MOBILE FILTER BUTTON -->
+    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: var(--space-4);" class="mobile-only-flex">
+      <h1 style="font-size: var(--font-lg);" id="mobile-results-count">Recherche</h1>
+      <button class="btn btn--outline btn--sm" id="btn-open-mobile-filters" style="display: none;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="21" y2="14"/><line x1="4" x2="20" y1="10" y2="3"/><line x1="12" x2="12" y1="21" y2="12"/><line x1="12" x2="12" y1="8" y2="3"/><line x1="20" x2="20" y1="21" y2="16"/><line x1="20" x2="20" y1="12" y2="3"/><line x1="2" x2="6" y1="14" y2="14"/><line x1="10" x2="14" y1="8" y2="8"/><line x1="18" x2="22" y1="16" y2="16"/></svg>
+        Filtres
+      </button>
+    </div>
+
+    <!-- SIDEBAR (DESKTOP) -->
+    <aside class="search-sidebar filter-panel" id="desktop-filters">
+      <div class="filter-section">
+        <div class="filter-title">Catégories</div>
+        <select class="select" id="filter-cat">
+          <option value="">Toutes les catégories</option>
+          <!-- Rempli par JS -->
+        </select>
+      </div>
+      
+      <div class="filter-section">
+        <div class="filter-title">Localisation</div>
+        <select class="select" id="filter-loc">
+          <!-- Rempli par JS -->
+        </select>
+      </div>
+
+      <div class="filter-section">
+        <div class="filter-title">Prix</div>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <input type="number" id="price-min" class="input" placeholder="Min" min="0">
+          <span>-</span>
+          <input type="number" id="price-max" class="input" placeholder="Max" min="0">
+        </div>
+      </div>
+
+      <div class="filter-section">
+        <div class="filter-title">État</div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <label style="display: flex; align-items: center; gap: 8px;"><input type="checkbox" value="Neuf" class="condition-cb"> Neuf</label>
+          <label style="display: flex; align-items: center; gap: 8px;"><input type="checkbox" value="Très bon état" class="condition-cb"> Très bon état</label>
+          <label style="display: flex; align-items: center; gap: 8px;"><input type="checkbox" value="Bon état" class="condition-cb"> Bon état</label>
+          <label style="display: flex; align-items: center; gap: 8px;"><input type="checkbox" value="État correct" class="condition-cb"> État correct</label>
+        </div>
+      </div>
+
+      <button class="btn btn--primary btn--block mt-4" id="btn-apply-desktop">Rechercher</button>
+    </aside>
+
+    <!-- RESULTS AREA -->
+    <div class="search-results">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4);">
+        <div style="font-weight: 500; color: var(--text-secondary);" class="desktop-only-block"><span id="results-count">0</span> annonces</div>
+        <div style="margin-left: auto;">
+          <select class="select" id="sort-select" style="padding: 6px 12px; font-size: var(--font-sm);">
+            <option value="recent">Plus récentes</option>
+            <option value="price-asc">Prix croissant</option>
+            <option value="price-desc">Prix décroissant</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- LISTINGS CONTAINER -->
+      <div id="results-container" class="grid grid-3">
+        <!-- Rempli par JS -->
+      </div>
+    </div>
+
+  </main>
+
+  <div id="footer-container"></div>
+
+  <!-- MOBILE FILTER MODAL -->
+  <div class="mobile-filter-modal" id="mobile-filter-modal">
+    <div class="mobile-filter-modal__header">
+      <h2 style="font-size: var(--font-lg);">Filtres</h2>
+      <button class="btn btn--outline" id="btn-close-mobile-filters" style="border: none; padding: 4px;">✕</button>
+    </div>
+    <div class="mobile-filter-modal__body" id="mobile-filter-body">
+      <!-- Cloned from desktop-filters via JS -->
+    </div>
+    <div class="mobile-filter-modal__footer">
+      <button class="btn btn--primary btn--block" id="btn-apply-mobile">Voir les annonces</button>
+    </div>
+  </div>
+
+  <style>
+    .mobile-only-flex { display: none; }
+    .desktop-only-block { display: block; }
+    @media (max-width: 767px) {
+      .mobile-only-flex { display: flex; }
+      .desktop-only-block { display: none; }
+      .search-sidebar { display: none; }
+      #btn-open-mobile-filters { display: flex !important; }
+    }
+  </style>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      document.getElementById('header-container').innerHTML = renderHeader('search');
+      document.getElementById('footer-container').innerHTML = renderFooter();
+
+      // Load data dynamically
+      const loaded = await loadData();
+      if (!loaded) return;
+
+      // Populate filters
+      const catSelect = document.getElementById('filter-cat');
+      CATEGORIES.forEach(cat => {
+        const option = document.createElement('option');
+        option.value = cat.id;
+        option.textContent = cat.name;
+        catSelect.appendChild(option);
+      });
+
+      const locSelect = document.getElementById('filter-loc');
+      CITIES.forEach(city => {
+        const option = document.createElement('option');
+        option.value = city === 'Toute la France' ? '' : city;
+        option.textContent = city;
+        locSelect.appendChild(option);
+      });
+
+      // Mobile Filters cloning
+      if (window.innerWidth < 768) {
+        const desktopFilters = document.getElementById('desktop-filters');
+        const mobileBody = document.getElementById('mobile-filter-body');
+        // We just move the content to the modal to keep IDs working simply for this prototype
+        while (desktopFilters.firstChild) {
+            mobileBody.appendChild(desktopFilters.firstChild);
+        }
+      }
+
+      // Read URL Params
+      const q = getParam('q');
+      const cat = getParam('cat');
+      if (cat) catSelect.value = cat;
+
+      // Filter Logic
+      function renderResults() {
+        let results = [...LISTINGS];
+        
+        const selectedCat = document.getElementById('filter-cat')?.value;
+        if (selectedCat) results = results.filter(l => l.category === selectedCat);
+
+        if (q) results = results.filter(l => l.title.toLowerCase().includes(q.toLowerCase()));
+
+        const minPrice = document.getElementById('price-min')?.value;
+        const maxPrice = document.getElementById('price-max')?.value;
+        if (minPrice) results = results.filter(l => l.price >= parseInt(minPrice));
+        if (maxPrice) results = results.filter(l => l.price <= parseInt(maxPrice));
+
+        // Sort
+        const sortMode = document.getElementById('sort-select').value;
+        if (sortMode === 'price-asc') results.sort((a, b) => (a.price || 0) - (b.price || 0));
+        else if (sortMode === 'price-desc') results.sort((a, b) => (b.price || 0) - (a.price || 0));
+
+        // Render HTML
+        document.getElementById('results-count').textContent = results.length;
+        document.getElementById('mobile-results-count').textContent = `${results.length} annonces`;
+
+        const container = document.getElementById('results-container');
+        // Force horizontal view on mobile, grid on desktop
+        const isMobile = window.innerWidth < 768;
+        
+        if (results.length === 0) {
+          container.className = 'grid grid-1';
+          container.innerHTML = `<div style="text-align:center; padding: 40px; background: white; border-radius: 8px; border: 1px solid var(--border-light);"><div style="font-size:32px; margin-bottom:16px;">🔍</div><h3>Aucun résultat</h3><p style="color:var(--text-muted);">Essayez de modifier vos filtres.</p></div>`;
+          return;
+        }
+
+        container.className = isMobile ? 'grid grid-1' : 'grid grid-3';
+        container.innerHTML = results.map(l => renderListingCard(l, isMobile)).join('');
+
+        // Placeholders
+        document.querySelectorAll('#results-container .card__image').forEach(el => {
+          const card = el.closest('.card');
+          const listing = getListing(card.dataset.id);
+          if (listing) {
+            const img = document.createElement('img');
+            img.src = generatePlaceholderImage(listing.imageColor, 400, 300, getCategory(listing.category)?.icon || '📦');
+            el.prepend(img);
+          }
+        });
+      }
+
+      // Event Listeners
+      const applyBtnDesktop = document.getElementById('btn-apply-desktop');
+      const applyBtnMobile = document.getElementById('btn-apply-mobile');
+      if (applyBtnDesktop) applyBtnDesktop.addEventListener('click', renderResults);
+      if (applyBtnMobile) {
+          applyBtnMobile.addEventListener('click', () => {
+              renderResults();
+              document.getElementById('mobile-filter-modal').classList.remove('active');
+          });
+      }
+      
+      document.getElementById('sort-select').addEventListener('change', renderResults);
+
+      document.getElementById('btn-open-mobile-filters').addEventListener('click', () => {
+        document.getElementById('mobile-filter-modal').classList.add('active');
+      });
+      document.getElementById('btn-close-mobile-filters').addEventListener('click', () => {
+        document.getElementById('mobile-filter-modal').classList.remove('active');
+      });
+
+      // Initial render
+      renderResults();
+    });
+  </script>
+</body>
+</html>

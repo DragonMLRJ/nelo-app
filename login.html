@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Nelo — Connexion</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body { background-color: var(--bg-main); display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+    .auth-card { background: white; width: 100%; max-width: 400px; padding: var(--space-6); border-radius: var(--radius); border: 1px solid var(--border-light); box-shadow: var(--shadow-md); text-align: center; }
+    .auth-logo { font-size: 32px; font-weight: 800; color: var(--brand); margin-bottom: var(--space-6); display: inline-block; }
+  </style>
+</head>
+<body>
+  <div class="container" style="display:flex; justify-content:center; width:100%;">
+    <div class="auth-card">
+      <a href="index.html" class="auth-logo">Nelo</a>
+      <h1 style="font-size: var(--font-xl); margin-bottom: var(--space-2);">Connexion</h1>
+      <p style="color: var(--text-muted); margin-bottom: var(--space-6);">Ravi de vous revoir</p>
+
+      <div class="input-group" style="text-align: left;">
+        <label>Email</label>
+        <input type="email" class="input" placeholder="votre@email.com" required>
+      </div>
+      <div class="input-group" style="text-align: left;">
+        <label>Mot de passe</label>
+        <input type="password" class="input" placeholder="••••••••" required>
+      </div>
+
+      <button class="btn btn--primary btn--block" style="margin-top: var(--space-4);" onclick="window.location='index.html'">Se connecter</button>
+
+      <div style="margin-top: var(--space-6); color: var(--text-muted); font-size: var(--font-sm);">
+        Pas encore de compte ? <a href="register.html" style="color: var(--brand); font-weight: 600;">S'inscrire</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

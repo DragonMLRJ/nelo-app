@@ -1,0 +1,31 @@
+/* SIGN UP PAGE */
+.signup {
+	display: flex;
+	gap: var(--space-8);
+	margin-top: var(--space-8);
+	margin-bottom: var(--space-8);
+	align-items: flex-start;
+}
+
+.signup-content {
+	flex: 1;
+	background: white;
+	padding: var(--space-8);
+	border-radius: var(--radius);
+	box-shadow: var(--shadow-sm);
+}
+
+.signup-form {
+	flex: 1;
+	background: white;
+	padding: var(--space-8);
+	border-radius: var(--radius);
+	box-shadow: var(--shadow-md);
+}
+
+.signup-content h2,
+.signup-form h2 {
+	margin-bottom: var(--space-6);
+	font-size: 28px;
+	text-align: center;
+}

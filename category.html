@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Nelo — Catégorie</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="header-container"></div>
+
+  <main class="container" style="padding-top: var(--space-6);">
+    
+    <div style="margin-bottom: var(--space-6); display: flex; align-items: center; gap: var(--space-4);">
+      <div id="cat-icon" style="font-size: 48px; width: 80px; height: 80px; background: white; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; border: 1px solid var(--border-light);"></div>
+      <div>
+        <h1 id="cat-title" style="font-size: var(--font-2xl);">Catégorie</h1>
+        <p id="cat-count" style="color: var(--text-muted);">-- annonces</p>
+      </div>
+    </div>
+
+    <div id="cat-results" class="grid grid-4" style="margin-bottom: var(--space-12);">
+      <!-- Loaded by JS -->
+    </div>
+
+  </main>
+
+  <div id="footer-container"></div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      document.getElementById('header-container').innerHTML = renderHeader('');
+      document.getElementById('footer-container').innerHTML = renderFooter();
+
+      const loaded = await loadData();
+      if (!loaded) return;
+
+      const catId = getParam('cat') || 'immobilier';
+      const cat = getCategory(catId);
+      
+      if (!cat) {
+        document.querySelector('main').innerHTML = 'Catégorie introuvable.';
+        return;
+      }
+
+      document.getElementById('cat-title').textContent = cat.name;
+      document.getElementById('cat-icon').textContent = cat.icon;
+      document.getElementById('cat-count').textContent = cat.count + ' annonces';
+
+      const results = getListingsByCategory(catId);
+      const container = document.getElementById('cat-results');
+      
+      if (results.length === 0) {
+        container.innerHTML = '<p>Aucune annonce dans cette catégorie.</p>';
+      } else {
+        container.innerHTML = results.map(l => renderListingCard(l)).join('');
+        
+        document.querySelectorAll('#cat-results .card__image').forEach(el => {
+          const card = el.closest('.card');
+          const listing = getListing(card.dataset.id);
+          if (listing) {
+            const img = document.createElement('img');
+            img.src = generatePlaceholderImage(listing.imageColor, 400, 300, cat.icon);
+            el.prepend(img);
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

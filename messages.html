@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Nelo — Messagerie</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Full height layout without footer for messaging */
+    body { height: 100vh; display: flex; flex-direction: column; overflow: hidden; padding-bottom: 0 !important; }
+    .msg-layout { flex: 1; display: flex; background: white; border-top: 1px solid var(--border-light); overflow: hidden; }
+    
+    .msg-sidebar { width: 100%; display: flex; flex-direction: column; border-right: 1px solid var(--border-light); }
+    @media (min-width: 768px) { .msg-sidebar { width: 350px; flex-shrink: 0; } }
+    
+    .msg-sidebar-header { padding: var(--space-4); border-bottom: 1px solid var(--border-light); }
+    .msg-list { flex: 1; overflow-y: auto; }
+    .msg-item { display: flex; padding: var(--space-4); gap: var(--space-3); border-bottom: 1px solid var(--border-light); cursor: pointer; transition: background 0.2s; }
+    .msg-item:hover, .msg-item.active { background: var(--bg-main); }
+    .msg-item-avatar { width: 48px; height: 48px; border-radius: 50%; background: var(--brand-light); color: var(--brand); display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; }
+    .msg-item-content { flex: 1; min-width: 0; }
+    .msg-item-header { display: flex; justify-content: space-between; margin-bottom: 4px; }
+    .msg-item-name { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .msg-item-time { font-size: var(--font-xs); color: var(--text-muted); }
+    .msg-item-preview { font-size: var(--font-sm); color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    
+    .msg-main { flex: 1; display: none; flex-direction: column; background: var(--bg-main); }
+    @media (min-width: 768px) { .msg-main { display: flex; } }
+    
+    .msg-main-header { padding: var(--space-4); background: white; border-bottom: 1px solid var(--border-light); display: flex; align-items: center; gap: var(--space-4); }
+    .msg-chat { flex: 1; overflow-y: auto; padding: var(--space-4); display: flex; flex-direction: column; gap: var(--space-3); }
+    .bubble { max-width: 75%; padding: 12px 16px; border-radius: 16px; font-size: var(--font-base); }
+    .bubble--them { background: white; align-self: flex-start; border: 1px solid var(--border-light); border-bottom-left-radius: 4px; }
+    .bubble--me { background: var(--brand); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+    
+    .msg-input-area { padding: var(--space-4); background: white; border-top: 1px solid var(--border-light); display: flex; gap: var(--space-2); }
+    
+    .back-btn { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border: none; background: transparent; cursor: pointer; }
+    @media (min-width: 768px) { .back-btn { display: none; } }
+  </style>
+</head>
+<body>
+  <div id="header-container"></div>
+
+  <div class="msg-layout">
+    <div class="msg-sidebar" id="msg-sidebar">
+      <div class="msg-sidebar-header">
+        <h2 style="margin-bottom: var(--space-3);">Messages</h2>
+        <input type="text" class="input" placeholder="Rechercher une conversation...">
+      </div>
+      <div class="msg-list" id="msg-list">
+        <!-- Rempli par JS -->
+      </div>
+    </div>
+
+    <div class="msg-main" id="msg-main">
+      <div class="msg-main-header">
+        <button class="back-btn" id="btn-back" aria-label="Retour"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" x2="5" y1="12" y2="12"/><polyline points="12 19 5 12 12 5"/></svg></button>
+        <div class="msg-item-avatar" id="chat-avatar"></div>
+        <div>
+          <div style="font-weight: 600;" id="chat-name">Sélectionnez une conversation</div>
+          <div style="font-size: var(--font-xs); color: var(--text-muted);" id="chat-listing"></div>
+        </div>
+      </div>
+      
+      <div class="msg-chat" id="msg-chat">
+        <!-- Messages -->
+      </div>
+      
+      <div class="msg-input-area">
+        <input type="text" class="input" placeholder="Écrivez un message..." style="flex: 1;" id="msg-input">
+        <button class="btn btn--primary" id="btn-send">Envoyer</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      document.getElementById('header-container').innerHTML = renderHeader('messages');
+      
+      const loaded = await loadData();
+      if (!loaded) return;
+
+      const listContainer = document.getElementById('msg-list');
+      
+      function renderConversations() {
+        listContainer.innerHTML = CONVERSATIONS.map((conv, index) => `
+          <div class="msg-item ${index === 0 && window.innerWidth >= 768 ? 'active' : ''}" data-id="${conv.id}">
+            <div class="msg-item-avatar">${conv.user.avatar}</div>
+            <div class="msg-item-content">
+              <div class="msg-item-header">
+                <span class="msg-item-name">${conv.user.name}</span>
+                <span class="msg-item-time">${conv.time}</span>
+              </div>
+              <div class="msg-item-preview">${conv.listing} : ${conv.lastMessage}</div>
+            </div>
+          </div>
+        `).join('');
+
+        document.querySelectorAll('.msg-item').forEach(item => {
+          item.addEventListener('click', () => loadConversation(item.dataset.id));
+        });
+      }
+
+      function loadConversation(id) {
+        const conv = CONVERSATIONS.find(c => c.id == id);
+        if (!conv) return;
+
+        document.querySelectorAll('.msg-item').forEach(i => i.classList.remove('active'));
+        document.querySelector(`.msg-item[data-id="${id}"]`)?.classList.add('active');
+
+        document.getElementById('chat-avatar').textContent = conv.user.avatar;
+        document.getElementById('chat-name').textContent = conv.user.name;
+        document.getElementById('chat-listing').textContent = conv.listing;
+
+        const chatContainer = document.getElementById('msg-chat');
+        chatContainer.innerHTML = conv.messages.map(m => `
+          <div class="bubble bubble--${m.from}">
+            ${m.text}
+          </div>
+        `).join('');
+        
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+
+        // Mobile handling
+        if (window.innerWidth < 768) {
+          document.getElementById('msg-sidebar').style.display = 'none';
+          document.getElementById('msg-main').style.display = 'flex';
+        }
+      }
+
+      document.getElementById('btn-back').addEventListener('click', () => {
+        document.getElementById('msg-sidebar').style.display = 'flex';
+        document.getElementById('msg-main').style.display = 'none';
+      });
+
+      renderConversations();
+      if (CONVERSATIONS.length > 0 && window.innerWidth >= 768) {
+        loadConversation(CONVERSATIONS[0].id);
+      }
+    });
+  </script>
+</body>
+</html>

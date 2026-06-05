@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Nelo — Le bon coin près de chez vous</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="header-container"></div>
+
+  <main class="container" style="padding-top: var(--space-6); padding-bottom: var(--space-12);">
+    
+    <div class="hero-section">
+      <h1 class="hero-section__title">C'est le moment de vendre</h1>
+      <a href="post-ad.html" class="btn btn--primary hero-section__btn">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+        Déposer une annonce
+      </a>
+      
+      <form class="hero-search" action="search.html" method="GET">
+        <div class="hero-search__input-group">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="text" name="q" placeholder="Que recherchez-vous ?" aria-label="Recherche">
+        </div>
+        <div class="hero-search__divider"></div>
+        <div class="hero-search__input-group">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+          <input type="text" name="location" placeholder="Saisissez une ville et un rayon" aria-label="Localisation">
+        </div>
+        <button type="submit" class="btn btn--primary hero-search__btn-submit">Rechercher</button>
+      </form>
+    </div>
+    
+    <h2 style="font-size: var(--font-xl); margin-bottom: var(--space-4);">Top catégories sur Nelo</h2>
+    <div class="grid categories-grid-responsive" id="categories-grid" style="margin-bottom: var(--space-12);">
+      <!-- Loaded by JS -->
+    </div>
+
+    <h2 style="font-size: var(--font-xl); margin-bottom: var(--space-4);">Des millions de petites annonces</h2>
+    <div class="grid grid-4" id="recent-listings-grid">
+      <!-- Loaded by JS -->
+    </div>
+
+  </main>
+
+  <div id="footer-container"></div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      document.getElementById('header-container').innerHTML = renderHeader('');
+      document.getElementById('footer-container').innerHTML = renderFooter();
+
+      // Load data dynamically
+      const loaded = await loadData();
+      if (!loaded) return;
+
+      // Render Categories
+      const catGrid = document.getElementById('categories-grid');
+      catGrid.innerHTML = CATEGORIES.map(cat => renderCategoryCard(cat)).join('');
+
+      // Render Recent Listings
+      const listGrid = document.getElementById('recent-listings-grid');
+      listGrid.innerHTML = LISTINGS.slice(0, 12).map(l => renderListingCard(l)).join('');
+
+      // Render placeholder images
+      document.querySelectorAll('.card__image').forEach(el => {
+        const card = el.closest('.card');
+        const listing = getListing(card.dataset.id);
+        if (listing) {
+          const img = document.createElement('img');
+          img.src = generatePlaceholderImage(listing.imageColor, 400, 300, getCategory(listing.category)?.icon || '📦');
+          el.prepend(img);
+        }
+      });
+    });
+  </script>
+</body>
+</html>

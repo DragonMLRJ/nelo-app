@@ -1,0 +1,238 @@
+/* HEADER */
+header {
+	background: var(--bg-glass);
+	backdrop-filter: blur(16px);
+	-webkit-backdrop-filter: blur(16px);
+	color: var(--text-primary);
+	height: 80px;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+	box-shadow: var(--shadow-sm);
+	position: sticky;
+	top: 0;
+	z-index: 100;
+}
+
+header .container {
+	padding: 0 20px;
+	max-width: 1280px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	height: 100%;
+}
+
+.left-nav {
+	display: flex;
+	align-items: center;
+	gap: 24px;
+	flex: 1;
+}
+
+header a {
+	color: var(--text-primary);
+	text-decoration: none;
+}
+
+header .logo {
+	font-family: 'Outfit', sans-serif;
+	margin: 0;
+	color: var(--brand);
+	font-weight: 800;
+	font-size: 32px;
+	letter-spacing: -1px;
+}
+
+.publish-btn {
+	background: linear-gradient(135deg, var(--brand) 0%, var(--brand-hover) 100%);
+	color: white !important;
+	border-radius: var(--radius-pill);
+	padding: 12px 20px;
+	font-weight: 700;
+	font-size: 15px;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	transition: all var(--transition-smooth);
+	box-shadow: var(--shadow-md);
+}
+
+.publish-btn i {
+	font-size: 16px;
+}
+
+.publish-btn:hover {
+	transform: translateY(-2px);
+	box-shadow: var(--shadow-glow), var(--shadow-lg);
+}
+
+.search-icon-btn {
+	background: var(--brand);
+	color: white;
+	border: none;
+	border-radius: 10px;
+	width: 40px;
+	height: 40px;
+	padding: 0;
+	margin: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.search-icon-btn:hover {
+	transform: none;
+	opacity: 0.9;
+}
+
+ul {
+	margin: 0;
+	padding: 0;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.menu li {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 0 16px;
+	margin: 0;
+	height: 80px;
+	font-weight: 600;
+	font-size: 13px;
+	transition: all var(--transition-smooth);
+	color: var(--text-secondary);
+	cursor: pointer;
+}
+
+.menu li i {
+	font-size: 22px;
+	margin-bottom: 4px;
+	color: var(--text-secondary);
+	transition: all var(--transition-smooth);
+}
+
+.menu li:hover, .menu li:hover i {
+	color: var(--brand);
+	transform: translateY(-2px);
+}
+
+.menu a {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+@media (max-width: 900px) {
+	.menu {
+		display: none;
+	}
+	.header-search {
+		display: flex; /* Keep search visible on mobile */
+		margin-left: 10px;
+	}
+	.publish-btn {
+		display: none; /* Hidden on mobile (moved to bottom nav) */
+	}
+	.left-nav {
+		gap: 12px;
+		width: 100%;
+		justify-content: space-between;
+	}
+}
+
+/* NOTIFICATION BADGE & DROPDOWN */
+.notification-item {
+	position: relative;
+}
+
+.notif-badge {
+	position: absolute;
+	top: 15px;
+	right: 10px;
+	background: #e74c3c;
+	color: white;
+	font-size: 10px;
+	font-weight: bold;
+	padding: 2px 6px;
+	border-radius: 10px;
+}
+
+.glass-dropdown {
+	position: absolute;
+	top: 100%;
+	right: 0;
+	width: 300px;
+	background: var(--bg-glass);
+	backdrop-filter: blur(16px);
+	border: 1px solid var(--border-light);
+	border-radius: 12px;
+	box-shadow: var(--shadow-lg);
+	z-index: 100;
+	margin-top: 12px;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+}
+
+.dropdown-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 12px 16px;
+	border-bottom: 1px solid var(--border-light);
+	background: rgba(255,255,255,0.5);
+}
+
+.dropdown-header h4 {
+	margin: 0;
+	font-size: 14px;
+	color: var(--text-primary);
+}
+
+.dropdown-header a {
+	font-size: 12px;
+	color: var(--brand);
+	text-decoration: none;
+}
+
+.dropdown-list {
+	list-style: none !important;
+	padding: 0 !important;
+	margin: 0 !important;
+	display: block !important;
+	max-height: 300px;
+	overflow-y: auto;
+}
+
+.dropdown-list li {
+	display: block !important;
+	padding: 12px 16px !important;
+	border-bottom: 1px solid var(--border-light);
+	text-align: left;
+	height: auto !important;
+}
+
+.dropdown-list li:hover {
+	background: rgba(255,255,255,0.5);
+}
+
+.dropdown-list li.unread {
+	background: rgba(219, 172, 24, 0.1);
+	border-left: 3px solid var(--brand);
+}
+
+.dropdown-list li p {
+	margin: 0;
+	font-size: 13px;
+	color: var(--text-primary);
+	font-weight: 500;
+}
+
+.dropdown-list li.empty {
+	text-align: center;
+	color: var(--text-secondary);
+	padding: 24px !important;
+}
