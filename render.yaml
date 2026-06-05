@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: nelo-backend
+    env: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 4000
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: FIREBASE_SERVICE_ACCOUNT
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
